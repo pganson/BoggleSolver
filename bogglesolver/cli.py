@@ -25,8 +25,7 @@ def main(args=None):
                         help="True if you want to play boggle.")
     parser.add_argument('-b', '--board', type=str,
                         help="String representing the Boggle Board.\
-                              Prints out boards solutions.\
-                              Currently not implemented.")
+                              Must be used with -p.")
     parser.add_argument('-t', '--time', type=int,
                         help="int game time in seconds.")
     parser.add_argument('-l', '--length', type=int,
@@ -37,8 +36,11 @@ def main(args=None):
     args = parser.parse_args(args=args)
 
     if args.words:
-        solver = SolveBoggle(args.words, column, row)
-        print(solver.solve(False))
+        solver = SolveBoggle()
+        solver.set_board(column, row, args.words.split())
+        words = solver.solve(normal_adj=False)
+        print(words)
+        print("Found %s words." % len(words))
 
     if args.time:
         game_time = args.time
@@ -47,8 +49,12 @@ def main(args=None):
         min_length = args.length
 
     if args.play:
-        solver = SolveBoggle(['a'] * 16, column, row)
-        solver.boggle.generate_boggle_board()
+        solver = SolveBoggle()
+        solver.set_board(column, row)
+        if args.board:
+            solver.set_board(column, row, args.board.split())
+        else:
+            solver.boggle.generate_boggle_board()
         words = solver.solve()
         print(solver.boggle)
         print("Play Boggle!!")

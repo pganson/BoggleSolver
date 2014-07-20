@@ -22,6 +22,8 @@ class test_boggle_letters(unittest.TestCase):
         assert str(game) == ""
         game.boggle_array = ['A'] * 4 + ['B'] * 4 + ['C'] * 4 + ['D'] * 4
         assert str(game) == " | A | A | A | A |\n | B | B | B | B |\n | C | C | C | C |\n | D | D | D | D |\n"
+        game.boggle_array = ['AB'] * 4 + ['C'] * 4 + ['D'] * 4 + ['E'] * 4
+        assert str(game) == " | AB  | AB  | AB  | AB  |\n |  C  |  C  |  C  |  C  |\n |  D  |  D  |  D  |  D  |\n |  E  |  E  |  E  |  E  |\n"
 
     def test_insert_index(self):
         """Test inserting a character into the boggle array."""
