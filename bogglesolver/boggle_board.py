@@ -24,12 +24,23 @@ class Boggle:
     def __str__(self):
         string = ""
         if self.is_full():
-            for i, letter in enumerate(self.boggle_array):
+            max_len = 1
+            spaces = " "
+            for tile in self.boggle_array:
+                if len(tile) > max_len:
+                    max_len = len(tile)
+            for i, tile in enumerate(self.boggle_array):
+                spaces = " " * (max_len - (len(tile) - 1))
+                max_spaces = " " * (max_len)
                 if (i % self.num_columns is 0) and (i is not 0):
-                    string += " |\n"
-                string += " | " + letter
+                    string += "%s|\n" % spaces
+                    string += " |%s%s" % (spaces, tile)
+                elif i is 0:
+                    string += " |%s%s" % (spaces, tile)
+                else:
+                    string += "%s|%s%s" % (max_spaces, spaces, tile)
 
-            string += " |\n"
+            string += "%s|\n" % spaces
         return string
 
     def generate_boggle_board(self):
