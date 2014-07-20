@@ -53,34 +53,48 @@ class SolveBoggle:
             ignore_indexes = []
         assert self.boggle.is_full(), "Boggle board has not been set."
         words = []
-        for i, letter in enumerate(self.boggle.boggle_array):
+        for i, tile in enumerate(self.boggle.boggle_array):
+            node = self.edict.dictionary_root
+            print("\n\nstarting at %s" % tile)
             if i not in ignore_indexes:
                 ignored = ignore_indexes + [i]
-                words += self.recurse_search_for_words(i, letter, '', self.edict.dictionary_root,
+                # print("Letter starting with %s" % letter)
+                words += self.recurse_search_for_words(i, tile, '', node,
                                                        indexes_searched=ignored,
                                                        normal_adj=normal_adj)
         return sorted(set(words))
 
-    def recurse_search_for_words(self, a_index, letter, word, node,
+    def recurse_search_for_words(self, a_index, tile, word, node,
                                  indexes_searched, normal_adj=True):
         """
         Recursively search boggle board for words.
 
-        TODO: shouldn't need letter.
-
         :param int a_index: index in the word.
-        :param str letter: current letter.
+        :param str tile: current boggle tile.
         :param str word: current potential word.
+        :param node: current node in the dictionary.
         :param indexes_searched: indexes searched already.
         :type indexes_searched: None or list.
         :param bool normal_adj: whether to solve for boggle or scrabble.
         """
         ret_val = []
+        letter = tile[0]
+        if len(tile) > 1:
+            for l in tile[0:-1]:
+                if l in node.letters.keys():
+                    node = node.letters[l]
+                else:
+                    return ret_val
+            letter = tile[-1]
+
         for index in self.boggle.get_adjacent(a_index, indexes_searched,
                                               normal_adj=normal_adj):
             searched = indexes_searched + [index]
             if self.edict.is_valid_path(node, letter):
-                ret_val += self.recurse_search_for_words(index, self.boggle.boggle_array[index], word + letter, node.letters[letter], indexes_searched=searched, normal_adj=normal_adj)
-        if self.edict.is_word(word + letter) and ((word + letter) not in ret_val) and (len(word + letter) >= self.min_word_len):
-            ret_val.append(word + letter)
+                ret_val += self.recurse_search_for_words(index, self.boggle.boggle_array[index], word + tile, node.letters[letter], indexes_searched=searched, normal_adj=normal_adj)
+
+        if self.edict.is_word(word + tile) and \
+                             ((word + tile) not in ret_val) and \
+                             (len(word + tile) >= self.min_word_len):
+            ret_val.append(word + tile)
         return ret_val
