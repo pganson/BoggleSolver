@@ -48,6 +48,14 @@ class test_boggle_letters(unittest.TestCase):
         array = ["a"] * 16
         game.set_array(array)
         assert game.is_full()
+        for tile in game.boggle_array:
+            assert tile == "a"
+
+        array = ["ab"] * 16
+        game.set_array(array)
+        assert game.is_full()
+        for tile in game.boggle_array:
+            assert tile == "ab"
 
 
 class test_boggle_adjacent(unittest.TestCase):
@@ -270,6 +278,37 @@ class test_SolveBoggle(unittest.TestCase):
         assert solve_game.boggle.is_full()
         assert solve_game.boggle.num_rows == rows
         assert solve_game.boggle.num_columns == columns
+
+    def test_solve_multi_letter_tiles(self):
+        """Test boards with tiles with multiple letters."""
+        columns = 7
+        rows = 1
+        array = ["w", "a", "t", "e", "r"]
+        array2 = ["w", "ate", "r", "bu", "rb", "li", "est"]
+
+        solve_game = SolveBoggle(True)
+
+        assert not solve_game.boggle.is_full()
+        assert solve_game.boggle.num_rows != rows
+        assert solve_game.boggle.num_columns != columns
+
+        solve_game.set_board(columns, rows, array)
+
+        assert not solve_game.boggle.is_full()
+        assert solve_game.boggle.num_rows == rows
+        assert solve_game.boggle.num_columns == columns
+
+        solve_game.set_board(columns, rows, array2)
+
+        assert solve_game.boggle.is_full()
+        assert solve_game.boggle.num_rows == rows
+        assert solve_game.boggle.num_columns == columns
+
+        found_words = solve_game.solve()
+
+        assert len(found_words) == 2
+        assert "water" in found_words
+        assert "burbliest" in found_words
 
 
 if __name__ == '__main__':
