@@ -55,7 +55,6 @@ class SolveBoggle:
         words = []
         for i, tile in enumerate(self.boggle.boggle_array):
             node = self.edict.dictionary_root
-            print("\n\nstarting at %s" % tile)
             if i not in ignore_indexes:
                 ignored = ignore_indexes + [i]
                 # print("Letter starting with %s" % letter)
