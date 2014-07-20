@@ -249,6 +249,7 @@ class test_dictionary(unittest.TestCase):
         my_dict.read_dictionary(True)
         assert my_dict.is_valid_path(my_dict.dictionary_root, 'o')
         assert not my_dict.is_valid_path(my_dict.dictionary_root.letters['o'], 'b')
+        assert not my_dict.is_valid_path(None, 'c')
 
 
 class test_SolveBoggle(unittest.TestCase):
@@ -283,20 +284,9 @@ class test_SolveBoggle(unittest.TestCase):
         """Test boards with tiles with multiple letters."""
         columns = 7
         rows = 1
-        array = ["w", "a", "t", "e", "r"]
         array2 = ["w", "ate", "r", "bu", "rb", "li", "est"]
 
         solve_game = SolveBoggle(True)
-
-        assert not solve_game.boggle.is_full()
-        assert solve_game.boggle.num_rows != rows
-        assert solve_game.boggle.num_columns != columns
-
-        solve_game.set_board(columns, rows, array)
-
-        assert not solve_game.boggle.is_full()
-        assert solve_game.boggle.num_rows == rows
-        assert solve_game.boggle.num_columns == columns
 
         solve_game.set_board(columns, rows, array2)
 
@@ -305,6 +295,10 @@ class test_SolveBoggle(unittest.TestCase):
         assert solve_game.boggle.num_columns == columns
 
         found_words = solve_game.solve()
+        print("Found words:")
+        print(found_words)
+        print("Array set is:")
+        print(solve_game.boggle.boggle_array)
 
         assert len(found_words) == 2
         assert "water" in found_words

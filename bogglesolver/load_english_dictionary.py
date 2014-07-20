@@ -126,9 +126,9 @@ class Edict:
         """
         word = string.lower()
         node = self.dictionary_root
-        for i in range(0, len(word)):
-            if word[i] in node.letters.keys():
-                node = node.letters[word[i]]
+        for letter in word:
+            if letter in node.letters.keys():
+                node = node.letters[letter]
             else:
                 node = None
                 break
@@ -151,4 +151,7 @@ class Edict:
         :param str letter: next letter.
         :returns: True if the node has a path for the given letter, False Otherwise
         """
-        return letter in node.letters.keys()
+        if node:
+            return letter in node.letters.keys()
+        else:
+            return False
