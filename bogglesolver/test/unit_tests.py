@@ -291,6 +291,10 @@ class test_SolveBoggle(unittest.TestCase):
         solve_game = SolveBoggle(True)
 
         solve_game.set_board(columns, rows, array2)
+        solve_game.edict.add_word("burblie")
+        solve_game.edict.add_word("lies")
+        solve_game.edict.add_word("wat")
+        solve_game.edict.add_word("burbl")
 
         assert solve_game.boggle.is_full()
         assert solve_game.boggle.num_rows == rows
