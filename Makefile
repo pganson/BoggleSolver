@@ -72,7 +72,7 @@ depends: .depends-ci .depends-dev
 .PHONY: .depends-ci
 .depends-ci: env Makefile $(DEPENDS_CI)
 $(DEPENDS_CI): Makefile
-	$(PIP) install pep8 pep257 nose coverage
+	$(PIP) install pep8 pep257 nose coverage boggleboard profilehooks
 	touch $(DEPENDS_CI)  # flag to indicate dependencies are installed
 
 .PHONY: .depends-dev

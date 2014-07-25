@@ -6,6 +6,8 @@
 from bogglesolver.boggle_board import Boggle
 from bogglesolver.load_english_dictionary import Edict
 
+from profilehooks import profile
+
 
 class SolveBoggle:
 
@@ -41,6 +43,7 @@ class SolveBoggle:
         else:
             self.boggle.generate_boggle_board()
 
+    @profile(sort=['time', 'calls'])
     def solve(self, ignore_indexes=None, normal_adj=True):
         """
         Solve the boggle board, or get all words for scrabble.
