@@ -282,6 +282,12 @@ class test_SolveBoggle(unittest.TestCase):
         assert solve_game.boggle.num_rows == rows
         assert solve_game.boggle.num_columns == columns
 
+        solve_game.set_board(columns, rows)
+
+        assert solve_game.boggle.is_full()
+        assert solve_game.boggle.num_rows == rows
+        assert solve_game.boggle.num_columns == columns
+
     def test_solve_multi_letter_tiles(self):
         """Test boards with tiles with multiple letters."""
         columns = 7
@@ -310,6 +316,75 @@ class test_SolveBoggle(unittest.TestCase):
         assert "water" in found_words
         assert "burbliest" in found_words
 
+    def test_init(self):
+        """Test solve boggle."""
+        columns = 5
+        rows = 1
+        array = ["w", "a", "t", "e", "r"]
+        solve_game = SolveBoggle(True)
+        solve_game.set_board(columns, rows, array)
+        solve_game.edict.add_word("wata")
+        solve_game.edict.add_word("wate")
+        solve_game.edict.add_word("a")
+        solve_game.edict.add_word("tear")
+        solve_game.edict.add_word("tea")
+        solve_game.edict.add_word("eat")
+        solved = solve_game.solve()
+        assert "water" in solved
+        assert "a" not in solved
+        assert "wata" not in solved
+        assert "wate" in solved
+        assert "eat" not in solved
+        assert "tear" not in solved
+        assert "tea" not in solved
+
+        solve_game.min_word_len = 0
+        solved = solve_game.solve()
+        assert "a" in solved
+
+        solved = solve_game.solve(normal_adj=False)
+        assert "water" in solved
+        assert "a" in solved
+        assert "wata" not in solved
+        assert "wate" in solved
+        assert "eat" in solved
+        assert "tea" in solved
+        assert "tear" in solved
+
+        solve_game = SolveBoggle(True)
+        solve_game.set_board(columns, rows, None)
+        print("Columns are: %s, Rows are: %s" % (columns, rows))
+        assert solve_game.boggle.is_full()
+        assert solve_game.boggle.size == columns * rows
+
+
+class test_GenerateBoard(unittest.TestCase):
+
+    """Unit tests for Generating boggle board."""
+
+    def test_4_by_4(self):
+        """Test generating a 4x4 board."""
+        b = Boggle(4, 4)
+        b.generate_boggle_board()
+        assert b.is_full()
+        assert b.num_columns == 4
+        assert b.num_rows == 4
+
+    def test_5_by_5(self):
+        """Test generating a 5x5 board."""
+        b = Boggle(5, 5)
+        b.generate_boggle_board()
+        assert b.is_full()
+        assert b.num_columns == 5
+        assert b.num_rows == 5
+
+    def test_8_by_3(self):
+        """Test generating a 8x3 board."""
+        b = Boggle(8, 3)
+        b.generate_boggle_board()
+        assert b.is_full()
+        assert b.num_columns == 8
+        assert b.num_rows == 3
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,56 +17,12 @@ from bogglesolver.solve_boggle import SolveBoggle
 from bogglesolver.twl06 import WORD_LIST
 from bogglesolver.twl06 import TEST_WORD_LIST
 
+from bogglesolver.test import ENV, REASON
+
 import boggleboard
 
 
-class test_solve_boggle(unittest.TestCase):
-
-    """Unit tests for the solve boggle class."""
-
-    # @unittest.skip("Skipping solve tests.")
-    def test_init(self):
-        """Test solve boggle."""
-        columns = 5
-        rows = 1
-        array = ["w", "a", "t", "e", "r"]
-        solve_game = SolveBoggle(True)
-        solve_game.set_board(columns, rows, array)
-        solve_game.edict.add_word("wata")
-        solve_game.edict.add_word("wate")
-        solve_game.edict.add_word("a")
-        solve_game.edict.add_word("tear")
-        solve_game.edict.add_word("tea")
-        solve_game.edict.add_word("eat")
-        solved = solve_game.solve()
-        assert "water" in solved
-        assert "a" not in solved
-        assert "wata" not in solved
-        assert "wate" in solved
-        assert "eat" not in solved
-        assert "tear" not in solved
-        assert "tea" not in solved
-
-        solve_game.min_word_len = 0
-        solved = solve_game.solve()
-        assert "a" in solved
-
-        solved = solve_game.solve(normal_adj=False)
-        assert "water" in solved
-        assert "a" in solved
-        assert "wata" not in solved
-        assert "wate" in solved
-        assert "eat" in solved
-        assert "tea" in solved
-        assert "tear" in solved
-
-        solve_game = SolveBoggle(True)
-        solve_game.set_board(columns, rows, None)
-        print("Columns are: %s, Rows are: %s" % (columns, rows))
-        assert solve_game.boggle.is_full()
-        assert solve_game.boggle.size == columns * rows
-
-
+@unittest.skipUnless(os.getenv(ENV), REASON)
 class test_everything(unittest.TestCase):
 
     """
@@ -75,12 +31,6 @@ class test_everything(unittest.TestCase):
     These tests all take a somewhat significant amount of time, usually due to loading in the dictionary.
     Could speed these up a lot if I store that dictionary globally.
     """
-
-    def test_generate_board(self):
-        """Test generating the board."""
-        game = Boggle(4, 4)
-        game.generate_boggle_board()
-        assert game.is_full()
 
     # @unittest.skip("Skipping integration tests.")
     def test_solves_Boggle(self):
@@ -177,50 +127,8 @@ class test_everything(unittest.TestCase):
             my_dict.is_word(line.lower())
             assert my_dict.is_word(line.lower())
 
-    # @unittest.skip("Skipping integration tests.")
-    def test_against_my_sql(self):
-        """Test searching in custom dictionary is faster than in my_sql."""
-        my_dict = Edict()
-        my_dict.read_dictionary()
 
-        num_slower_than_sql = 0
-
-        conn = sqlite3.connect('example.db')
-        con = conn.cursor()
-        con.execute('''CREATE TABLE my_dict (word text)''')
-
-        for word in WORD_LIST:
-            con.execute("INSERT INTO my_dict VALUES (?)", [word])
-
-        conn.commit()
-
-        test_words = TEST_WORD_LIST
-
-        time1 = time.time()
-        time2 = time.time()
-        for word in test_words:
-            time1 = time.time()
-            my_dict.is_word(word)
-            time2 = time.time()
-            d_time = time2 - time1
-
-            time1 = time.time()
-            con.execute('SELECT * FROM my_dict WHERE word=?', [word])
-            time2 = time.time()
-            b_time = time2 - time1
-
-            if d_time > b_time:
-                num_slower_than_sql += 1
-                print("D time is: " + str(d_time))
-                print("B time is: " + str(b_time))
-        con.close()
-        conn.close()
-
-        os.remove("example.db")
-
-        assert num_slower_than_sql <= 1
-
-
+@unittest.skipUnless(os.getenv(ENV), REASON)
 class test_speed_against_other_libraries(unittest.TestCase):
 
     """Test my boggle library against other boggle libraries."""
