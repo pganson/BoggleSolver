@@ -129,6 +129,7 @@ class test_everything(unittest.TestCase):
 
 
 @unittest.skipUnless(os.getenv(ENV), REASON)
+@unittest.skipIf(sys.version_info.major != "2", "External library I'm timing against only works in python 2.x.")
 class test_speed_against_other_libraries(unittest.TestCase):
 
     """Test my boggle library against other boggle libraries."""
