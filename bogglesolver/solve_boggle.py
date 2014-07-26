@@ -7,6 +7,7 @@ from bogglesolver.boggle_board import Boggle
 from bogglesolver.load_english_dictionary import Edict
 
 from profilehooks import profile
+import logging
 
 
 class SolveBoggle:
@@ -52,18 +53,19 @@ class SolveBoggle:
                                 False to solve for scrabble.
         :returns: sorted list of all words found.
         """
-        if ignore_indexes is None:
-            ignore_indexes = []
-        assert self.boggle.is_full(), "Boggle board has not been set."
-        words = []
-        for i, tile in enumerate(self.boggle.boggle_array):
-            node = self.edict.dictionary_root
-            if i not in ignore_indexes:
-                ignored = ignore_indexes + [i]
-                # print("Letter starting with %s" % letter)
-                words += self.recurse_search_for_words(i, tile, '', node,
-                                                       indexes_searched=ignored,
-                                                       normal_adj=normal_adj)
+        words = self.iterative_search_for_words(ignore_indexes, normal_adj)
+#        if ignore_indexes is None:
+#            ignore_indexes = []
+#        assert self.boggle.is_full(), "Boggle board has not been set."
+#        words = []
+#        for i, tile in enumerate(self.boggle.boggle_array):
+#            node = self.edict.dictionary_root
+#            if i not in ignore_indexes:
+#                ignored = ignore_indexes + [i]
+#                # print("Letter starting with %s" % letter)
+#                words += self.recurse_search_for_words(i, tile, '', node,
+#                                                       indexes_searched=ignored,
+#                                                       normal_adj=normal_adj)
         return sorted(set(words))
 
     def recurse_search_for_words(self, a_index, tile, word, node,
@@ -89,14 +91,81 @@ class SolveBoggle:
                     return ret_val
             letter = tile[-1]
 
+        if self.edict.is_word(word + tile) and \
+                             ((word + tile) not in ret_val) and \
+                             (len(word + tile) >= self.min_word_len):
+            ret_val.append(word + tile)
+
         for index in self.boggle.get_adjacent(a_index, indexes_searched,
                                               normal_adj=normal_adj):
             searched = indexes_searched + [index]
             if self.edict.is_valid_path(node, letter):
                 ret_val += self.recurse_search_for_words(index, self.boggle.boggle_array[index], word + tile, node.letters[letter], indexes_searched=searched, normal_adj=normal_adj)
-
-        if self.edict.is_word(word + tile) and \
-                             ((word + tile) not in ret_val) and \
-                             (len(word + tile) >= self.min_word_len):
-            ret_val.append(word + tile)
         return ret_val
+
+    def iterative_search_for_words(self, visited_indexes, normal_adj=True):
+        """
+        Iteratively search for words.
+
+        :retval: List of words found in the boggle board.
+        """
+        j = 0
+        if visited_indexes is None:
+            visited_indexes = []
+        assert self.boggle.is_full(), "Boggle board has not been set."
+        words = []
+
+        # what structure should I use to keep track of visited paths? Let's try my dictionary structure.
+        visited_paths = Edict()
+        # add paths by calling visited_paths.add_words(path) where path is a string
+        # check that a path exists by calling visited_paths.is_word()
+
+        path = ['0']
+        cur_word = [self.boggle.boggle_array[0]]
+        cur_index = 0
+        visited_paths.add_word(''.join(path))
+        visited_indexes = [0]
+        potential_word = ""
+
+        while True:
+            # logging.debug("Current index is: %s" % cur_index)
+            # logging.debug("Visited indexes: %s" % visited_indexes)
+            # logging.debug("Adjacent indexes are: %s\n" % self.boggle.get_adjacent(cur_index, visited_indexes, normal_adj=normal_adj))
+            for index in self.boggle.get_adjacent(cur_index, visited_indexes, normal_adj=normal_adj):
+                # logging.debug("Checking adjacent index %s for current index %s" % (index, cur_index))
+                potential_word = ''.join(cur_word)
+                if not visited_paths.is_word(''.join(path + [str(index)])):
+                    if self.edict.is_still_potentially_valid(potential_word + self.boggle.boggle_array[index]):
+                        cur_index = index
+                        visited_paths.add_word(''.join(path + [str(index)]))
+                        cur_word += [self.boggle.boggle_array[cur_index]]
+                        path += [str(index)]
+                        # logging.debug("Expanding path to: %s" % path)
+                        visited_indexes.append(index)
+                        break
+            else:
+                # back up one because there are not valid paths left off of this one.
+                if len(path) > 1:
+                    path.pop()
+                    cur_word.pop()
+                    visited_indexes.pop()
+                    cur_index = int(path[-1])
+                    # logging.debug("Poping off path of > 1. New path is: %s\n" % path)
+                elif len(path) == 1:
+                    if cur_index < self.boggle.size - 1:
+                        cur_index += 1
+                        visited_indexes = [cur_index]
+                        path = [str(cur_index)]
+                        cur_word = [self.boggle.boggle_array[cur_index]]
+                        # logging.debug("incrementing current index to %s so starting letter is: %s\n" % (cur_index, self.boggle.boggle_array[cur_index]))
+                    else:
+                        logging.debug("leaving1")
+                        break
+
+            potential_word = ''.join(cur_word)
+            # check if a word, if it is, add to words, if not, back the path up by 1 index
+            if self.edict.is_word(potential_word) and len(potential_word) >= self.min_word_len:
+                words.append(potential_word)
+                # logging.debug("Found word %s" % ''.join(cur_word))
+
+        return sorted(set(words))
