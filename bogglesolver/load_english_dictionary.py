@@ -25,23 +25,6 @@ class _dictnode:
         self.letters = {}
         self.word = ""
 
-    def add_letter(self, word, index):
-        """
-        Add a word letter by letter to the tree.
-
-        :param str word: word that should be added.
-        :param str index: current index for the letter to add.
-        """
-        if len(word) > index:
-            if word[index] in self.letters.keys():
-                self.letters[word[index]].add_letter(word, index + 1)
-            else:
-                self.letters[word[index]] = _dictnode()
-                self.letters[word[index]].add_letter(word, index + 1)
-        else:
-            self.is_word = True
-            self.word = word
-
 
 class Edict:
 
@@ -94,7 +77,17 @@ class Edict:
 
         :param str word: word to add.
         """
-        self.dictionary_root.add_letter(word.lower(), 0)
+        node = self.dictionary_root
+        length = len(word)
+        for i, letter in enumerate(word.lower()):
+            if letter in node.letters.keys():
+                node = node.letters[letter]
+            else:
+                node.letters[letter] = _dictnode()
+                node = node.letters[letter]
+            if (length - 1) == i:
+                node.is_word = True
+                node.word = word.lower()
 
     def get_words(self, node, all_words=[]):
         """
