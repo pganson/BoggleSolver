@@ -79,15 +79,15 @@ class Edict:
         """
         node = self.dictionary_root
         length = len(word)
-        for i, letter in enumerate(word.lower()):
-            if letter in node.letters.keys():
-                node = node.letters[letter]
+        for i, letter in enumerate(word):
+            if letter.lower() in node.letters.keys():
+                node = node.letters[letter.lower()]
             else:
-                node.letters[letter] = _dictnode()
-                node = node.letters[letter]
+                node.letters[letter.lower()] = _dictnode()
+                node = node.letters[letter.lower()]
             if (length - 1) == i:
                 node.is_word = True
-                node.word = word.lower()
+                node.word = word
 
     def get_words(self, node, all_words=[]):
         """
@@ -106,22 +106,21 @@ class Edict:
             all_words.append(node.word)
         return all_words
 
-    def get_node(self, string):
+    def get_node(self, word):
         """
         Get a node based on the provided word.
 
         Used to determine if a string is still potentially a valid word.
 
-        :param str string: find the node at the end of the string.
+        :param str word: find the node at the end of the word.
         :returns: node of the dictionary node that corresponds to
-                  the end of the string or None if the string is not on
+                  the end of the word or None if the word is not on
                   a valid dictionary path.
         """
-        word = string.lower()
         node = self.dictionary_root
         for letter in word:
-            if letter in node.letters.keys():
-                node = node.letters[letter]
+            if letter.lower() in node.letters.keys():
+                node = node.letters[letter.lower()]
             else:
                 node = None
                 break

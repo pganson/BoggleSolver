@@ -123,21 +123,18 @@ class SolveBoggle:
         path = ['0']
         cur_word = [self.boggle.boggle_array[0]]
         cur_index = 0
-        visited_paths.add_word(''.join(path))
+        visited_paths.add_word(path)
         visited_indexes = [0]
         potential_word = ""
 
         while True:
-            # logging.debug("Current index is: %s" % cur_index)
-            # logging.debug("Visited indexes: %s" % visited_indexes)
-            # logging.debug("Adjacent indexes are: %s\n" % self.boggle.get_adjacent(cur_index, visited_indexes, normal_adj=normal_adj))
             for index in self.boggle.get_adjacent(cur_index, visited_indexes, normal_adj=normal_adj):
                 # logging.debug("Checking adjacent index %s for current index %s" % (index, cur_index))
                 potential_word = ''.join(cur_word)
-                if not visited_paths.is_word(''.join(path + [str(index)])):
+                if not visited_paths.is_word(path + [str(index)]):
                     if self.edict.is_still_potentially_valid(potential_word + self.boggle.boggle_array[index]):
                         cur_index = index
-                        visited_paths.add_word(''.join(path + [str(index)]))
+                        visited_paths.add_word(path + [str(index)])
                         cur_word += [self.boggle.boggle_array[cur_index]]
                         path += [str(index)]
                         # logging.debug("Expanding path to: %s" % path)
