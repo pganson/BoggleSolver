@@ -1,0 +1,19 @@
+Iterative + get adjacent generator + not creating ret_val list + reduced is_adjacent function:
+10x10: 5.36977481842041
+4x4: 0.1336979866027832
+
+Iterative + get adjacent generator + not creating ret_val list:
+10x10: 6.884693145751953
+4x4: 0.14299798011779785
+
+Iterative + get adjacent generator:
+10x10: 7.0848469734191895
+4x4: 0.14414691925048828
+
+Iterative:
+10x10: 8.309391021728516 seconds
+4x4: 0.1578388214111328 seconds
+
+Recursive:
+10x10: 18.73709988594055
+4x4: 0.17302298545837402

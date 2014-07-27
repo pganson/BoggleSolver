@@ -126,11 +126,11 @@ class SolveBoggle:
         visited_paths.add_word(path)
         visited_indexes = [0]
         potential_word = ""
-
         while True:
+            potential_word = ''.join(cur_word)
+            # grab the first index adjacent to the current one, update path, current word, current index, and visited paths with this new index. Ignoring all visited indexes so far
             for index in self.boggle.get_adjacent(cur_index, visited_indexes, normal_adj=normal_adj):
                 # logging.debug("Checking adjacent index %s for current index %s" % (index, cur_index))
-                potential_word = ''.join(cur_word)
                 if not visited_paths.is_word(path + [str(index)]):
                     if self.edict.is_still_potentially_valid(potential_word + self.boggle.boggle_array[index]):
                         cur_index = index
@@ -141,7 +141,7 @@ class SolveBoggle:
                         visited_indexes.append(index)
                         break
             else:
-                # back up one because there are not valid paths left off of this one.
+                # if we didn't find an adjacent index, back up one because there are not valid paths left off of this one.
                 if len(path) > 1:
                     path.pop()
                     cur_word.pop()
@@ -158,11 +158,56 @@ class SolveBoggle:
                     else:
                         logging.debug("leaving1")
                         break
-
             potential_word = ''.join(cur_word)
             # check if a word, if it is, add to words, if not, back the path up by 1 index
             if self.edict.is_word(potential_word) and len(potential_word) >= self.min_word_len:
                 words.append(potential_word)
                 # logging.debug("Found word %s" % ''.join(cur_word))
+
+#        paths_to_visit = [[i for i in range(0, self.boggle.size) if i not in visited_indexes]]
+#
+#        path_index = 0
+#        visited_indexes = [0]
+#        potential_word = [self.boggle.boggle_array[0]]
+#        words = []
+#        while True:
+#            # alternative way not using edict
+#            # using an array of adjacent arrays
+#
+#            while not len(paths_to_visit[path_index]):
+#                # pop off indexes of the path array until one exists, decrementing cur_index as we go.
+#                if len(paths_to_visit):
+#                    path_index -= 1
+#                    print("Just popped off path index %s, which was %s." % (path_index, paths_to_visit.pop()))
+#                    visited_indexes.pop()
+#                    potential_word.pop()
+#                else:
+#                    # if the path has no length, we've run out of indexes
+#                    break
+#                if path_index < 0:
+#                    print("Path index is less than 0. Paths to visit is: %s" % paths_to_visit)
+#                    break
+#            if not len(paths_to_visit):
+#                break
+#            # pop off the first element in the current adjacency array and store in current index.
+#            # if current adjacency array is empty, pop one off of the path array
+#            index = paths_to_visit[path_index].pop()
+#            visited_indexes += [index]
+#            possible_word = ''.join(potential_word) + self.boggle.boggle_array[index]
+#
+#            print("Index is: %s" % index)
+#            # Check if it is a word
+#            if self.edict.is_word(possible_word) and len(possible_word) >= self.min_word_len:
+#                words.append(possible_word)
+#
+#            # start by filling the next index with indexes adjacent to the current one
+#            # if still potentially a word, appendto paths_to_visit and increment path_index
+#            to_append = []
+#            for potential_index in self.boggle.get_adjacent(index, visited_indexes, normal_adj=normal_adj):
+#                if self.edict.is_still_potentially_valid(''.join(potential_word)):
+#                    to_append.append(potential_index)
+#            if to_append:
+#                paths_to_visit.append(to_append)
+#                potential_word.append(self.boggle.boggle_array[index])
 
         return sorted(set(words))
