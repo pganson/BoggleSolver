@@ -63,11 +63,8 @@ class Edict:
         :param str word: word to look for in the dictionary.
         :returns: True if word is in dictionary. Otherwise False.
         """
-        ret_val = False
         node = self.get_node(word)
-        if node is not None:
-            ret_val = node.is_word
-        return ret_val
+        return node.is_word if node else False
 
     def add_word(self, word):
         """
@@ -78,16 +75,15 @@ class Edict:
         :param str word: word to add.
         """
         node = self.dictionary_root
-        length = len(word)
-        for i, letter in enumerate(word):
-            if letter.lower() in node.letters.keys():
-                node = node.letters[letter.lower()]
+        for letter in word:
+            l = letter.lower()
+            if l in node.letters.keys():
+                node = node.letters[l]
             else:
-                node.letters[letter.lower()] = _dictnode()
-                node = node.letters[letter.lower()]
-            if (length - 1) == i:
-                node.is_word = True
-                node.word = word
+                node.letters[l] = _dictnode()
+                node = node.letters[l]
+        node.is_word = True
+        node.word = word
 
     def get_words(self, node, all_words=[]):
         """
@@ -117,13 +113,14 @@ class Edict:
                   the end of the word or None if the word is not on
                   a valid dictionary path.
         """
+        lower = str.lower
         node = self.dictionary_root
         for letter in word:
-            if letter.lower() in node.letters.keys():
-                node = node.letters[letter.lower()]
+            l = lower(letter)
+            if l in node.letters.keys():
+                node = node.letters[l]
             else:
-                node = None
-                break
+                return None
         return node
 
     def is_still_potentially_valid(self, word):
@@ -132,8 +129,7 @@ class Edict:
 
         :param word: word to test for validity.
         """
-        node = self.get_node(word)
-        return node is not None
+        return self.get_node(word) is not None
 
     def is_valid_path(self, node, letter):
         """
@@ -143,7 +139,4 @@ class Edict:
         :param str letter: next letter.
         :returns: True if the node has a path for the given letter, False Otherwise
         """
-        if node:
-            return letter in node.letters.keys()
-        else:
-            return False
+        return letter in node.letters.keys() if node else False

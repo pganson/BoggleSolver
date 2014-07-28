@@ -59,13 +59,27 @@ class Boggle:
         :param int index_1: first index
         :param int index_2: second index
         :returns: True if the indexes are adjacent. False otherwise.
-        """
+
         ret_val = False
 
-        if abs((index_2 // self.num_columns) - (index_1 // self.num_columns)) <= 1 and abs((index_2 % self.num_columns) - (index_1 % self.num_columns)) <= 1:
+        row_1 = index_1 // self.num_columns
+        row_2 = index_2 // self.num_columns
+        column_1 = index_1 % self.num_columns
+        column_2 = index_2 % self.num_columns
+
+        rows_are_less_than_1_away = abs(row_2 - row_1) <= 1
+        columns_are_less_than_1_away = abs(column_2 - column_1) <= 1
+        if rows_are_less_than_1_away and columns_are_less_than_1_away:
             ret_val = True
 
+        if (index_2 // self.num_columns)
+
         return ret_val
+        """
+        if abs((index_2 // self.num_columns) - (index_1 // self.num_columns)) <= 1 and abs((index_2 % self.num_columns) - (index_1 % self.num_columns)) <= 1:
+            return True
+
+        return False
 
     def get_adjacent(self, index, ignore=None, normal_adj=True):
         """

@@ -1,3 +1,31 @@
+In edicts get_node, changed node = None /n break to return None:
+10x10: 4.658396005630493
+4x4: 0.11558389663696289
+
+Got rid of ret_val variable from is_adjacent:
+10x10: 4.797688007354736
+4x4: 0.11597394943237305
+
+Made l = lower(letter) in get_node:
+10x10: 4.916639804840088
+4x4: 0.11818289756774902
+
+Defined lower as str.lower in get_node:
+10x10: 5.107898950576782
+4x4: 0.12140202522277832
+
+Took node variable out of is_potentially_valid: Inconclusive
+10x10: 5.212698936462402
+4x4: 0.12853288650512695
+
+Improved add_word:
+10x10: 5.207659006118774
+4x4: 0.13018393516540527
+
+Improved is_word speed:
+10x10: 5.279094934463501
+4x4: 0.13187289237976074
+
 Iterative + get adjacent generator + not creating ret_val list + reduced is_adjacent function:
 10x10: 5.36977481842041
 4x4: 0.1336979866027832
@@ -17,3 +45,22 @@ Iterative:
 Recursive:
 10x10: 18.73709988594055
 4x4: 0.17302298545837402
+
+
+
+
+
+
+
+Init with improved add words:
+Mine: 3.0899698734283447
+Theirs: 2.325377941131592
+
+Init:
+Mine: 3.684222936630249
+Theirs: 2.164306879043579
+
+
+
+
+40x40: 10 minutes 57.7 seconds

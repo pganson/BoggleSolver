@@ -163,7 +163,7 @@ class SolveBoggle:
             if self.edict.is_word(potential_word) and len(potential_word) >= self.min_word_len:
                 words.append(potential_word)
                 # logging.debug("Found word %s" % ''.join(cur_word))
-
+        return sorted(set(words))
 #        paths_to_visit = [[i for i in range(0, self.boggle.size) if i not in visited_indexes]]
 #
 #        path_index = 0
@@ -210,4 +210,4 @@ class SolveBoggle:
 #                paths_to_visit.append(to_append)
 #                potential_word.append(self.boggle.boggle_array[index])
 
-        return sorted(set(words))
+#        return sorted(set(words))
