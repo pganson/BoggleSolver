@@ -123,6 +123,25 @@ class Edict:
                 return None
         return node
 
+    def get_next_nodes(self, node, tile):
+        """
+        Get the next nodes in the dictionary. Supports multi-letter tiles.
+
+        :param node: Node to start from.
+        :param str tile: The contents of a tile.
+        :returns: list of nodes.
+        """
+        lower = str.lower
+        nodes = []
+        for letter in tile:
+            l = lower(letter)
+            if l in node.letters.keys():
+                node = node.letters[l]
+                nodes.append(node)
+            else:
+                return None
+        return nodes
+
     def is_still_potentially_valid(self, word):
         """
         Determine if a possible word is still potentially valid.
