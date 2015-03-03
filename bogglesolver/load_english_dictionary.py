@@ -112,7 +112,7 @@ class Edict:
         """
         Determine if the letter provided is a valid path from the provided node.
 
-        :param _dictnode node: node in the Edict.
+        :param _dictnode node: node in the dictionary trie.
         :param str letter: next letter.
         :returns: True if the node has a path for the given letter, False Otherwise
         """

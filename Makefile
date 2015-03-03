@@ -25,7 +25,7 @@ ifneq ($(findstring win32, $(PLATFORM)), )
 	export TCL_LIBRARY=C:\\Python34\\tcl\\tcl8.5
 else
 	SYS_PYTHON := python3
-	SYS_VIRTUALENV := virtualenv
+	SYS_VIRTUALENV := pyvenv
 	BIN := $(ENV)/bin
 	ifneq ($(findstring cygwin, $(PLATFORM)), )
 		OPEN := cygstart
@@ -64,7 +64,7 @@ $(EGG_INFO): Makefile setup.py
 .PHONY: .virtualenv
 .virtualenv: $(PIP)
 $(PIP):
-	$(SYS_VIRTUALENV) --python $(SYS_PYTHON) $(ENV)
+	$(SYS_VIRTUALENV) $(SYS_PYTHON) $(ENV)
 
 .PHONY: depends
 depends: .depends-ci .depends-dev

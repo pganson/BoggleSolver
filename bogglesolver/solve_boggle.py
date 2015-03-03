@@ -4,7 +4,6 @@
 
 
 from bogglesolver.boggle_board import Boggle
-from bogglesolver.load_english_dictionary import Edict
 from bogglesolver.adjacency import *
 
 
@@ -17,10 +16,8 @@ class SolveBoggle:
     Then it searches the board for all valid words.
     """
 
-    def __init__(self, use_test_words=False):
-        self.use_test_words = use_test_words
-        self.edict = Edict()
-        self.edict.read_dictionary(self.use_test_words)
+    def __init__(self, trie_root):
+        self.trie_root = trie_root
         self.boggle = Boggle()
         self.min_word_len = 3
 
@@ -39,6 +36,21 @@ class SolveBoggle:
             self.boggle.set_array(boggle_list)
         else:
             self.boggle.generate_boggle_board()
+        return ''.join(self.boggle.boggle_array)
+
+    def get_last_node(self, node, letter):
+        """
+        Determine if the letter provided is a valid path from the provided node.
+
+        :param _dictnode node: node in the dictionary trie.
+        :param str letter: next letter.
+        :returns: True if the node has a path for the given letter, False Otherwise
+        """
+        for l in letter:
+            if l not in node.letters.keys():
+                return None
+            node = node.letters[l]
+        return node
 
     def solve(self, ignore_indexes=None, normal_adj=True, adjacency_funct=get_standard_boggle_adjacent):
         """
@@ -53,7 +65,7 @@ class SolveBoggle:
         assert self.boggle.is_full(), "Boggle board has not been set."
         words = set()
         for i, letter in enumerate(self.boggle.boggle_array):
-            node = self.edict.get_last_node(self.edict.dictionary_root, letter)
+            node = self.get_last_node(self.trie_root, letter)
             if i not in ignore_indexes and node is not None:
                 self.recurse_search_for_words(i, node, ignore_indexes + [i], adjacency_funct, words)
         return sorted(words)
@@ -73,7 +85,7 @@ class SolveBoggle:
         if not node.letters.keys():
             return
         for index in adjacency_funct(a_index, self.boggle.num_columns, self.boggle.num_rows, indexes_searched):
-            new_node = self.edict.get_last_node(node, self.boggle.boggle_array[index])
+            new_node = self.get_last_node(node, self.boggle.boggle_array[index])
             if new_node is not None:
                 self.recurse_search_for_words(index, new_node, indexes_searched + [index],
                                               adjacency_funct, words)

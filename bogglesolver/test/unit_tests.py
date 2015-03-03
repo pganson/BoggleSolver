@@ -110,7 +110,10 @@ class test_SolveMultiLetterBoggle(unittest.TestCase):
         rows = 1
         array = ["w", "at", "e", "r"]
         word = "water"
-        solve_game = SolveBoggle(True)
+        edict = Edict()
+        edict.read_dictionary(True)
+        edict.add_word(word)
+        solve_game = SolveBoggle(edict.dictionary_root)
         solve_game.set_board(4, rows, array)
         words = solve_game.solve()
         print(words)
@@ -149,7 +152,7 @@ class test_SolveBoggle(unittest.TestCase):
         rows = 1
         array = ["w", "a", "t", "e", "r"]
         array2 = ["w", "a", "t", "e", "r", "w", "a", "t", "e", "r"]
-        solve_game = SolveBoggle(True)
+        solve_game = SolveBoggle(None)
 
         assert not solve_game.boggle.is_full()
         assert solve_game.boggle.num_rows != rows

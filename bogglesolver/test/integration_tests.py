@@ -28,14 +28,17 @@ class test_solve_boggle(unittest.TestCase):
         columns = 5
         rows = 1
         array = ["w", "a", "t", "e", "r"]
-        solve_game = SolveBoggle(True)
+
+        edict = Edict()
+        edict.add_word("wata")
+        edict.add_word("wate")
+        edict.add_word("a")
+        edict.add_word("tear")
+        edict.add_word("tea")
+        edict.add_word("eat")
+        edict.add_word("water")
+        solve_game = SolveBoggle(edict.dictionary_root)
         solve_game.set_board(columns, rows, array)
-        solve_game.edict.add_word("wata")
-        solve_game.edict.add_word("wate")
-        solve_game.edict.add_word("a")
-        solve_game.edict.add_word("tear")
-        solve_game.edict.add_word("tea")
-        solve_game.edict.add_word("eat")
         solved = solve_game.solve()
         assert "water" in solved
         assert "a" not in solved
@@ -58,7 +61,7 @@ class test_solve_boggle(unittest.TestCase):
         assert "tea" in solved
         assert "tear" in solved
 
-        solve_game = SolveBoggle(True)
+        solve_game = SolveBoggle(edict.dictionary_root)
         solve_game.set_board(columns, rows, None)
         print("Columns are: %s, Rows are: %s" % (columns, rows))
         assert solve_game.boggle.is_full()
@@ -85,15 +88,17 @@ class test_everything(unittest.TestCase):
         rows = 4
         array = "a b c d e f g h i j k l m n o p".split()
 
-        assert len(array) == columns * rows
+        edict = Edict()
 
-        solve_game = SolveBoggle()
-        solve_game.set_board(columns, rows, array)
+        assert len(array) == columns * rows
 
         # found words from: http://www.bogglecheat.net/, though may not be in my dictionary
         known_words = ["knife", "mino", "bein", "fink", "nife", "glop", "polk", "mink", "fino", "jink", "nief", "knop", "ink", "fin", "jin", "nim", "kop", "pol", "fab", "fie", "nie", "kon", "lop", "ab", "ef", "if", "mi", "be", "jo", "ch", "on", "lo", "ae", "ea", "in", "ba", "fa", "no", "ko", "op", "po"]
         for word in known_words:
-            solve_game.edict.add_word(word)
+            edict.add_word(word)
+
+        solve_game = SolveBoggle(edict.dictionary_root)
+        solve_game.set_board(columns, rows, array)
 
         solve_game.min_word_len = 5
         solved = solve_game.solve()
